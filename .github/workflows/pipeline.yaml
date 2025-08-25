@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        env:
+          COMMITS: ${{ toJson(github.event.commits) }}
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -26,14 +28,12 @@ jobs:
         run: npm run test
       - name: Test Success
         uses: rjstone/discord-webhook-notify@v2
-        uses: actions/checkout@v4
         if: ${{ !success() }
-        env:
-          COMMITS: ${{ toJson(github.event.commits) }}
+        
         with:
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
             severity: error
-            details: ${{COMMITS}}
+            details: ${{ COMMITS }}
 
 
   playwright_tests:
