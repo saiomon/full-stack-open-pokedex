@@ -47,6 +47,8 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - name: Trigger deployment
+          env:
+            deploy_url: ${{ secrets.RENDER_HOOK_KEY }}
           run: |
-            curl https://api.render.com/deploy/srv-${{ secrets.RENDER_ID }}?key=${{ secrets.RENDER_API_KEY }}
+           curl "$deploy_url"
 
