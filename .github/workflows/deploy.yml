@@ -1,0 +1,20 @@
+name: Render
+on:
+  workflow_run:
+    workflows: [pipeline]
+    types:
+      - completed
+jobs:
+  deploy:
+    needs: simple_deployment_pipeline
+    name: Wait for Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Render Deployment
+        uses: bounceapp/render-action@0.12.0
+        with:
+          render-token: ${{ secrets.RENDER_TOKEN }}
+          service-id: ${{ secrets.RENDER_ID }}
+          retries: 2
+          wait: 16000
+          sleep: 30000
