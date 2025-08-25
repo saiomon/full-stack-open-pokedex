@@ -24,6 +24,14 @@ jobs:
         run: npm run build
       - name: Test
         run: npm run test
+      - name: Test Success
+        uses: rjstone/discord-webhook-notify@v2
+        if: success()
+        with:
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+            severity: info
+            details: All tests passed!
+
   playwright_tests:
     needs: simple_deployment_pipeline
     timeout-minutes: 60
