@@ -24,6 +24,13 @@ jobs:
         run: npm run build
       - name: Test
         run: npm run test
+      - name: Test Success
+        uses: rjstone/discord-webhook-notify@v2
+        if: ${{ !success() }}
+        with:
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+            severity: error
+            details: Build failed ${{ github.event.head_commit.url }} ${{ github.event.pull_request.url }}
   playwright_tests:
     needs: simple_deployment_pipeline
     timeout-minutes: 60
@@ -58,6 +65,7 @@ jobs:
         deploy_url: ${{ secrets.RENDER_HOOK_KEY }}
       run: |
         curl "$deploy_url"
+    
   tag_release:
     if: ${{ github.event_name == 'push' }}
     needs: deploy_hook
@@ -74,5 +82,12 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         DEFAULT_BUMP: patch
+    - name: Deploy Success
+      uses: rjstone/discord-webhook-notify@v2
+      if: success()
+      with:
+        webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+        severity: info
+        details: Deploy Successful!
 
 
