@@ -50,9 +50,9 @@ jobs:
       runs-on: ubuntu-latest
       steps:
       - uses: actions/checkout@v4
+      - name: Trigger deployment
         env:
           IS_SKIP: ${{ contains(join(toJson(github.event.commits.*.message)), '#skip') }}
-      - name: Trigger deployment
         if: ${{ github.event_name == 'push' || !IS_SKIP }}
         env:
           deploy_url: ${{ secrets.RENDER_HOOK_KEY }}
@@ -68,9 +68,10 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: '0'
+      
+    - name: Bump version and push tag
       env:
           IS_SKIP: ${{ contains(join(toJson(github.event.commits.*.message)), '#skip') }}
-    - name: Bump version and push tag
       if: ${{ !IS_SKIP}}
       uses: anothrNick/github-tag-action@1.75.0
       env:
