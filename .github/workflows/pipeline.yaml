@@ -50,6 +50,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - name: Trigger deployment
+          if: ${{ github.event_name == 'push' }}
           env:
             deploy_url: ${{ secrets.RENDER_HOOK_KEY }}
           run: |
