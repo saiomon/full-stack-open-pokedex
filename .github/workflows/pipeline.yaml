@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        env:
-          COMMITS: ${{ toJson(github.event.commits) }}
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -32,9 +30,7 @@ jobs:
         with:
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
             severity: error
-            details: ${{ COMMITS }}
-
-
+            details: ${{ github.event.head_commit.url }} ${{ github.event.pull_request.url }}
   playwright_tests:
     needs: simple_deployment_pipeline
     timeout-minutes: 60
