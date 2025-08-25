@@ -49,12 +49,15 @@ jobs:
       needs: playwright_tests
       runs-on: ubuntu-latest
       steps:
-        - name: Trigger deployment
-          if: ${{ github.event_name == 'push' }}
-          env:
-            deploy_url: ${{ secrets.RENDER_HOOK_KEY }}
-          run: |
-           curl "$deploy_url"
+      - uses: actions/checkout@v4
+        env:
+          IS_SKIP: ${{ contains(join(toJson(github.event.commits.*.message)), '#skip') }}
+      - name: Trigger deployment
+        if: ${{ github.event_name == 'push' || !IS_SKIP }}
+        env:
+          deploy_url: ${{ secrets.RENDER_HOOK_KEY }}
+        run: |
+          curl "$deploy_url"
   tag_release:
     if: ${{ github.event_name == 'push' }}
     needs: deploy_hook
@@ -65,7 +68,10 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: '0'
+      env:
+          IS_SKIP: ${{ contains(join(toJson(github.event.commits.*.message)), '#skip') }}
     - name: Bump version and push tag
+      if: ${{ !IS_SKIP}}
       uses: anothrNick/github-tag-action@1.75.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

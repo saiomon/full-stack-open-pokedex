@@ -24,5 +24,5 @@ jobs:
         run: echo "$COMMIT_MESSAGES"
       - name: is skip
         env:
-          is_skip: ${{ contains(join(toJson(github.event.commits.*.message)), '#skip') }}
-        run: echo "$is_skip"
+          IS_SKIP: ${{ contains(join(toJson(github.event.commits.*.message)), '#skip') }}
+        run: echo "$IS_SKIP"
