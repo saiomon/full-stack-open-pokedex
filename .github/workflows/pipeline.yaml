@@ -27,14 +27,14 @@ jobs:
       - name: Test Success
         uses: rjstone/discord-webhook-notify@v2
         uses: actions/checkout@v4
-        if: ${{ !success() }}
+        if: ${{ !success() }
+        env:
+          COMMITS: ${{ toJson(github.event.commits) }}
         with:
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
             severity: error
-            details: Build failed
-        env:
-          COMMITS: ${{ toJson(github.event.commits) }}
-        run: echo "$COMMITS" 
+            details: ${{COMMITS}}
+
 
   playwright_tests:
     needs: simple_deployment_pipeline
