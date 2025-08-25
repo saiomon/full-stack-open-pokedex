@@ -30,7 +30,7 @@ jobs:
         with:
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
             severity: error
-            details: ${{ toJson(github.event.commits.*.url) }}
+            details: ${{ toJson(github.event.commits) }}
 
   playwright_tests:
     needs: simple_deployment_pipeline
