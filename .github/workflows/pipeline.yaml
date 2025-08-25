@@ -53,8 +53,7 @@ jobs:
       - name: Trigger deployment   
         env:
           deploy_url: ${{ secrets.RENDER_HOOK_KEY }}
-          IS_SKIP: ${{ contains(join(toJson(github.event.commits.*.message)), '#skip') }}
-        if: ${{ github.event_name == 'push' || !IS_SKIP }}
+        if: ${{ github.event_name == 'push' || !contains(join(toJson(github.event.commits.*.message)), '#skip') }}
         run: |
           curl "$deploy_url"
   tag_release:
